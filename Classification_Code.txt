@@ -1,0 +1,94 @@
+# -*- coding: utf-8 -*-
+
+
+import numpy as np
+import pickle
+#from sklearn.tree import DecisionTreeClassifier
+#from sklearn import linear_model
+#from sklearn.neural_network import MLPClassifier
+#import tensorflow as tf
+#from sklearn.neighbors import KNeighborsClassifier
+from sklearn import linear_model
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
+Sad = pickle.load(open("Sad.p","rb"))
+Happy = pickle.load(open("Happy.p","rb"))
+Surprise = pickle.load(open("Surprise.p","rb"))
+Neutral = pickle.load(open("Neutral.p","rb"))
+
+
+def data():
+    X_Train = []
+    y_Train = []
+    X_Test = []
+    y_Test = []
+    
+    for Emo_Train_1 in Happy[:150]:
+        X_Train.append(Emo_Train_1)
+        y_Train.append("Happy")
+    for Emo_Test_1 in Happy[150:]:
+        X_Test.append(Emo_Test_1)
+        y_Test.append("Happy")
+    
+    for Emo_Train_2 in Sad[:150]:
+        X_Train.append(Emo_Train_2)
+        y_Train.append("Sad")
+    for Emo_Test_2 in Sad[150:]:
+        X_Test.append(Emo_Test_2)
+        y_Test.append("Sad")
+        
+    for Emo_Train_3 in Surprise[:150]:
+        X_Train.append(Emo_Train_3)
+        y_Train.append("Surprise")
+    for Emo_Test_3 in Surprise[150:]:
+        X_Test.append(Emo_Test_3)
+        y_Test.append("Surprise")
+        
+    for Emo_Train_4 in Neutral[:150]:
+        X_Train.append(Emo_Train_4)
+        y_Train.append("Neutral")
+    for Emo_Test_4 in Neutral[150:]:
+        X_Test.append(Emo_Train_4)
+        y_Test.append("Neutral")
+        
+    return np.array(X_Train), np.array(y_Train), X_Test, y_Test
+
+X_Train, y_Train, X_Test, y_Test = data()
+
+
+def Classifier(x):
+    Rclassifier = RandomForestClassifier(max_depth=2, random_state=0)
+    #Kclassifier = KNeighborsClassifier(n_neighbors=5)
+    log_clf = LogisticRegression(random_state=42)
+    svm_clf = SVC(probability=True, random_state=42)
+    classifier = VotingClassifier(estimators=[('lr', log_clf),('rf', Rclassifier), ('svc', svm_clf)], voting='soft') #, ('KNN', Kclassifier)
+    classifier.fit(X_Train,y_Train)
+    predictied_class = classifier.predict([x])
+    return predictied_class
+
+    
+def accuracy_percentage():
+    y_predict = []
+    y_true = []
+    for i in X_Test:
+        y_predict.append(Classifier(i)[0])
+    for j in y_Test:
+        y_true.append(j)
+    
+    accuracy = accuracy_score(y_true, y_predict)
+    print (accuracy)
+
+print(accuracy_percentage())
+
+
+    
+    
+y=[106.0, 489.0, 239, 120.0, 549.0, 216, 131.0, 611.0, 213, 145.0, 672.0, 225, 177.0, 727.0, 235, 220.0, 772.0, 247, 273.0, 806.0, 259, 341.0, 813.0, 259, 409.0, 806.0, 262, 464.0, 773.0, 253, 511.0, 727.0, 245, 540.0, 672.0, 235, 555.0, 609.0, 225, 566.0, 545.0, 229, 575.0, 482.0, 248, 580.0, 418.0, 278, 123.0, 392.0, 268, 158.0, 367.0, 258, 203.0, 361.0, 234, 247.0, 367.0, 207, 288.0, 381.0, 179, 365.0, 378.0, 178, 408.0, 363.0, 203, 452.0, 361.0, 224, 496.0, 365.0, 247, 535.0, 385.0, 260, 325.0, 410.0, 144, 325.0, 451.0, 103, 326.0, 493.0, 61, 327.0, 536.0, 20, 283.0, 564.0, 54, 305.0, 572.0, 36, 328.0, 578.0, 25, 352.0, 571.0, 22, 375.0, 566.0, 40, 175.0, 420.0, 209, 201.0, 403.0, 202, 235.0, 403.0, 182, 265.0, 423.0, 149, 234.0, 432.0, 159, 200.0, 434.0, 181, 397.0, 423.0, 144, 425.0, 402.0, 175, 458.0, 405.0, 192, 485.0, 422.0, 198, 461.0, 436.0, 171, 427.0, 434.0, 150, 235.0, 656.0, 144, 272.0, 643.0, 110, 306.0, 634.0, 85, 332.0, 641.0, 87, 359.0, 633.0, 82, 395.0, 642.0, 105, 433.0, 653.0, 138, 397.0, 671.0, 131, 361.0, 683.0, 131, 332.0, 686.0, 132, 306.0, 684.0, 133, 273.0, 675.0, 136, 250.0, 659.0, 136, 305.0, 656.0, 106, 332.0, 658.0, 104, 360.0, 654.0, 102, 418.0, 655.0, 129, 359.0, 653.0, 101, 332.0, 656.0, 102, 306.0, 654.0, 104]
+np.array(y)
+
+print (Classifier(y))    
