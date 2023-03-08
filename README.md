@@ -4,7 +4,7 @@ This is a project for building an Emotional Recognition System using machine lea
 
 ## Dataset
 
-I used the FER-2013 dataset for training and testing our model. It contains 48x48-pixel grayscale images of faces, labeled with seven emotion categories. Due to confidentiality reasons, I are unable to share the dataset.
+I used dataset similar to FER-2013 dataset for training and testing our model. It contains 48x48-pixel grayscale images of faces, labeled with seven emotion categories. Due to confidentiality reasons, I am unable to share the dataset.
 
 ## System Architecture
 
